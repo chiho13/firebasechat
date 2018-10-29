@@ -57,35 +57,7 @@ class LoginController: UIViewController {
         })
     }
     
-    @objc func handleRegister() {
-        guard let email = emailTextField.text, let password = passwordTextField.text, let name = nameTextField.text else {
-            print("Form is not valid")
-            return
-        }
-        Auth.auth().createUser(withEmail: email, password: password) {(authResult, error) in
-            
-            guard (authResult?.user) != nil else {
-                return
-            }
-            
-            guard let uid = authResult?.user.uid else {
-                return
-            }
-            
-            //successfully authenticated user
-            let ref = Database.database().reference(fromURL: "https://gameofchats-523e4.firebaseio.com/")
-            let usersReference = ref.child("users").child(uid)
-            let values = ["name": name, "email": email]
-            usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                if err != nil {
-                    print(err!)
-                    return
-                }
-                
-                self.dismiss(animated: true, completion: nil)
-            })
-        }
-    }
+
 
     let nameTextField: UITextField = {
         let tf = UITextField()

@@ -26,17 +26,14 @@ class NewMessageController: UITableViewController {
     func fetchUser() {
         Database.database().reference().child("users").observe(.childAdded, with: {(snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
-                let user = User()
-                user.name = dictionary["name"] as? String
-                user.email = dictionary["email"] as? String
-                
+                let user = User(dictionary: dictionary)
                 self.users.append(user)
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
                 
-                print(user.name!, user.email!)
+                print(user.name!, user.email!, user.profileImageUrl!)
             }
         }, withCancel: nil)
     }
@@ -55,6 +52,22 @@ class NewMessageController: UITableViewController {
         let user = users[indexPath.row]
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.email
+    
+        cell.imageView?.contentMode = .scaleAspectFill
+        
+        if let profileImageUrl = user.profileImageUrl {
+            let url = URL(string: profileImageUrl)
+            URLSession.shared.dataTask(with: url!, completionHandler: ({ (data, response, error) in
+                if error != nil {
+                    print(error!)
+                    return
+                }
+                DispatchQueue.main.async {
+                    cell.imageView?.image = UIImage(data: data!)
+                }
+            })).resume()
+        }
+        
         return cell
     }
 }
