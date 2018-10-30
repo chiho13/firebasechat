@@ -17,6 +17,7 @@
 		C66A788D2181D65F002FA84C /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A788C2181D65F002FA84C /* NewMessageController.swift */; };
 		C66A78902181E487002FA84C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A788F2181E487002FA84C /* User.swift */; };
 		C66A7892218353C2002FA84C /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A7891218353C2002FA84C /* LoginController+handlers.swift */; };
+		C6BAC1AF2188B5D900EE402F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BAC1AE2188B5D900EE402F /* Extensions.swift */; };
 		C6C0CE09217F66C9002BF941 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C6C0CE08217F66C9002BF941 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,7 @@
 		C66A788F2181E487002FA84C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C66A7891218353C2002FA84C /* LoginController+handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
 		C66CC122217F89D500CE1ECD /* gameofChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gameofChat.entitlements; sourceTree = "<group>"; };
+		C6BAC1AE2188B5D900EE402F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C6C0CE08217F66C9002BF941 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,6 +91,7 @@
 		C63E9C1D217E2518008E9C68 /* gameofChat */ = {
 			isa = PBXGroup;
 			children = (
+				C6BAC1AD2188B5BA00EE402F /* Helpers */,
 				C66A788E2181E472002FA84C /* Model */,
 				C66CC122217F89D500CE1ECD /* gameofChat.entitlements */,
 				C63E9C30217E2A27008E9C68 /* Controller */,
@@ -119,6 +122,14 @@
 				C66A788F2181E487002FA84C /* User.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		C6BAC1AD2188B5BA00EE402F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C6BAC1AE2188B5D900EE402F /* Extensions.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,6 +270,7 @@
 				C63E9C32217E2A7B008E9C68 /* LoginController.swift in Sources */,
 				C66A78902181E487002FA84C /* User.swift in Sources */,
 				C63E9C1F217E2518008E9C68 /* AppDelegate.swift in Sources */,
+				C6BAC1AF2188B5D900EE402F /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
