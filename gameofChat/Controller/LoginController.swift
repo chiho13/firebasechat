@@ -60,8 +60,6 @@ class LoginController: UIViewController {
                 self.dismiss(animated: true, completion: nil)
         })
     }
-    
-
 
     let nameTextField: UITextField = {
         let tf = UITextField()

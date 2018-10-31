@@ -18,6 +18,7 @@
 		C66A78902181E487002FA84C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A788F2181E487002FA84C /* User.swift */; };
 		C66A7892218353C2002FA84C /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A7891218353C2002FA84C /* LoginController+handlers.swift */; };
 		C6BAC1AF2188B5D900EE402F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BAC1AE2188B5D900EE402F /* Extensions.swift */; };
+		C6BAC1B12189D58600EE402F /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BAC1B02189D58600EE402F /* ChatLogController.swift */; };
 		C6C0CE09217F66C9002BF941 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C6C0CE08217F66C9002BF941 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		C66A7891218353C2002FA84C /* LoginController+handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
 		C66CC122217F89D500CE1ECD /* gameofChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gameofChat.entitlements; sourceTree = "<group>"; };
 		C6BAC1AE2188B5D900EE402F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		C6BAC1B02189D58600EE402F /* ChatLogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
 		C6C0CE08217F66C9002BF941 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,6 +114,7 @@
 				C63E9C31217E2A7B008E9C68 /* LoginController.swift */,
 				C66A788C2181D65F002FA84C /* NewMessageController.swift */,
 				C66A7891218353C2002FA84C /* LoginController+handlers.swift */,
+				C6BAC1B02189D58600EE402F /* ChatLogController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6BAC1B12189D58600EE402F /* ChatLogController.swift in Sources */,
 				C66A788D2181D65F002FA84C /* NewMessageController.swift in Sources */,
 				C63E9C21217E2518008E9C68 /* MessagesController.swift in Sources */,
 				C66A7892218353C2002FA84C /* LoginController+handlers.swift in Sources */,
