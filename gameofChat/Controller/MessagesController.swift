@@ -23,6 +23,7 @@ class MessagesController: UITableViewController {
     
     @objc func handleNewMessage() {
         let newMessageController = NewMessageController()
+        newMessageController.messagesController = self
         let navController = UINavigationController(rootViewController: newMessageController)
         present(navController, animated: true, completion: nil)
     }
@@ -52,7 +53,6 @@ class MessagesController: UITableViewController {
     func setupNavBarWithUser(user: User) {
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChatController)))
         
         let containerView = UIView()
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -69,6 +69,10 @@ class MessagesController: UITableViewController {
         }
         
         containerView.addSubview(profileImageView)
+        let nameLabel = UILabel()
+        containerView.addSubview(nameLabel)
+        nameLabel.text = user.name
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         //constraints
         profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
@@ -76,10 +80,7 @@ class MessagesController: UITableViewController {
         profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-        let nameLabel = UILabel()
-        containerView.addSubview(nameLabel)
-        nameLabel.text = user.name
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+ 
         nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8).isActive = true
         nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         nameLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
@@ -89,12 +90,12 @@ class MessagesController: UITableViewController {
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         
         self.navigationItem.titleView = titleView
-        
-      
     }
     
-    @objc func showChatController() {
-        print(123)
+    @objc func showChatControllerForUser(user: User) {
+        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.user = user
+        navigationController?.pushViewController(chatLogController, animated: true)
     }
     
     @objc func handleLogout() {
