@@ -10,7 +10,9 @@ import UIKit
 import Firebase
 
 class MessagesController: UITableViewController {
-
+    
+    let cellId = "cellId"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -19,11 +21,52 @@ class MessagesController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
         // user is not logged in
         checkIfUserIsLoggedIn()
+        
+        tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+        observerMessages()
+    }
+    
+    var messages = [Message]()
+    var messagesDictionary = [String: Message]()
+    
+    func observerMessages() {
+        let ref = Database.database().reference().child("messages")
+        ref.observe(.childAdded, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let message = Message(dictionary: dictionary)
+                self.messages.append(message)
+                
+                if let toId = message.toId {
+                    self.messagesDictionary[toId] = message
+                    self.messages = Array(self.messagesDictionary.values)
+                    
+                    self.messages.sort(by: {(message1, message2) -> Bool in
+                        return message1.timestamp!.intValue > message2.timestamp!.intValue
+                    })
+                }
+               
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }, withCancel: nil)
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
+        let message = messages[indexPath.row]
+        cell.message = message
+        return cell
     }
     
     @objc func handleNewMessage() {
         let newMessageController = NewMessageController()
-        newMessageController.messagesController = self
+        newMessageController.newMessageUserDelegate = self
         let navController = UINavigationController(rootViewController: newMessageController)
         present(navController, animated: true, completion: nil)
     }
@@ -65,7 +108,7 @@ class MessagesController: UITableViewController {
         profileImageView.clipsToBounds = true
         
         if let profileImageUrl = user.profileImageUrl {
-            profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
+            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
         }
         
         containerView.addSubview(profileImageView)
@@ -92,12 +135,6 @@ class MessagesController: UITableViewController {
         self.navigationItem.titleView = titleView
     }
     
-    @objc func showChatControllerForUser(user: User) {
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
-        chatLogController.user = user
-        navigationController?.pushViewController(chatLogController, animated: true)
-    }
-    
     @objc func handleLogout() {
         do {
             try Auth.auth().signOut()
@@ -109,6 +146,18 @@ class MessagesController: UITableViewController {
         loginController.messagesController = self
         present(loginController, animated: true, completion: nil)
     }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+}
 
+extension MessagesController: NewMessageUserDelegate {
+    func showChatControllerForUser(user: User) {
+        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.user = user
+        navigationController?.pushViewController(chatLogController, animated: true)
+    }
 }
 

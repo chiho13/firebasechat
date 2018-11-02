@@ -14,6 +14,8 @@
 		C63E9C26217E2519008E9C68 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C63E9C25217E2519008E9C68 /* Assets.xcassets */; };
 		C63E9C29217E2519008E9C68 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C63E9C27217E2519008E9C68 /* LaunchScreen.storyboard */; };
 		C63E9C32217E2A7B008E9C68 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63E9C31217E2A7B008E9C68 /* LoginController.swift */; };
+		C6576169218C8C02004CB94F /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6576168218C8C02004CB94F /* Message.swift */; };
+		C657616C218CA949004CB94F /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C657616B218CA949004CB94F /* UserCell.swift */; };
 		C66A788D2181D65F002FA84C /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A788C2181D65F002FA84C /* NewMessageController.swift */; };
 		C66A78902181E487002FA84C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A788F2181E487002FA84C /* User.swift */; };
 		C66A7892218353C2002FA84C /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A7891218353C2002FA84C /* LoginController+handlers.swift */; };
@@ -34,6 +36,8 @@
 		C63E9C28217E2519008E9C68 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C63E9C2A217E2519008E9C68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C63E9C31217E2A7B008E9C68 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
+		C6576168218C8C02004CB94F /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		C657616B218CA949004CB94F /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		C66A788C2181D65F002FA84C /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		C66A788F2181E487002FA84C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C66A7891218353C2002FA84C /* LoginController+handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 		C63E9C1D217E2518008E9C68 /* gameofChat */ = {
 			isa = PBXGroup;
 			children = (
+				C657616A218CA909004CB94F /* View */,
 				C6BAC1AD2188B5BA00EE402F /* Helpers */,
 				C66A788E2181E472002FA84C /* Model */,
 				C66CC122217F89D500CE1ECD /* gameofChat.entitlements */,
@@ -119,10 +124,19 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		C657616A218CA909004CB94F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C657616B218CA949004CB94F /* UserCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		C66A788E2181E472002FA84C /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				C66A788F2181E487002FA84C /* User.swift */,
+				C6576168218C8C02004CB94F /* Message.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -270,10 +284,12 @@
 				C6BAC1B12189D58600EE402F /* ChatLogController.swift in Sources */,
 				C66A788D2181D65F002FA84C /* NewMessageController.swift in Sources */,
 				C63E9C21217E2518008E9C68 /* MessagesController.swift in Sources */,
+				C6576169218C8C02004CB94F /* Message.swift in Sources */,
 				C66A7892218353C2002FA84C /* LoginController+handlers.swift in Sources */,
 				C63E9C32217E2A7B008E9C68 /* LoginController.swift in Sources */,
 				C66A78902181E487002FA84C /* User.swift in Sources */,
 				C63E9C1F217E2518008E9C68 /* AppDelegate.swift in Sources */,
+				C657616C218CA949004CB94F /* UserCell.swift in Sources */,
 				C6BAC1AF2188B5D900EE402F /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
