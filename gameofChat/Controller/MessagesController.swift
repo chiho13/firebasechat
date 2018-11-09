@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class MessagesController: UITableViewController {
+class MessagesController: UITableViewController, NewMessageUserDelegate {
     
     let cellId = "cellId"
     
@@ -33,58 +33,56 @@ class MessagesController: UITableViewController {
             return
         }
         
+        
         let ref = Database.database().reference().child("user-messages").child(uid)
         
         ref.observe(.childAdded, with: { (snapshot) in
-            let messageId = snapshot.key
-            let messageReference = Database.database().reference().child("messages").child(messageId)
+            let userId = snapshot.key
             
-            messageReference.observeSingleEvent(of: .value, with: { (snapshot) in
+            Database.database().reference().child("user-messages").child(uid).child(userId).observe(.childAdded, with: { (snapshot) in
                 
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    let message = Message(dictionary: dictionary)
-                    
-                    if let toId = message.toId {
-                        self.messagesDictionary[toId] = message
-                        self.messages = Array(self.messagesDictionary.values)
-                        
-                        self.messages.sort(by: {(message1, message2) -> Bool in
-                            return message1.timestamp!.intValue > message2.timestamp!.intValue
-                        })
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                }
-                
+                let messageId = snapshot.key
+                self.fetchMessageWithMessageId(messageId: messageId)
             }, withCancel: nil)
             
         }, withCancel: nil)
     }
     
-    func observerMessages() {
-        let ref = Database.database().reference().child("messages")
-        ref.observe(.childAdded, with: { (snapshot) in
+    private func fetchMessageWithMessageId(messageId: String) {
+        let messageReference = Database.database().reference().child("messages").child(messageId)
+        
+        messageReference.observeSingleEvent(of: .value, with: { (snapshot) in
+            
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 let message = Message(dictionary: dictionary)
-                self.messages.append(message)
                 
-                if let toId = message.toId {
-                    self.messagesDictionary[toId] = message
-                    self.messages = Array(self.messagesDictionary.values)
-                    
-                    self.messages.sort(by: {(message1, message2) -> Bool in
-                        return message1.timestamp!.intValue > message2.timestamp!.intValue
-                    })
+                if let chatPartnerId = message.chatPartnerId() {
+                    self.messagesDictionary[chatPartnerId] = message
                 }
-               
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+                self.attemptReloadOfTable()
             }
         }, withCancel: nil)
     }
+    
+    private func attemptReloadOfTable() {
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
+    }
+    
+    var timer: Timer?
+    
+    @objc func handleReloadTable() {
+        self.messages = Array(self.messagesDictionary.values)
+        
+        self.messages.sort(by: {(message1, message2) -> Bool in
+            return message1.timestamp!.intValue > message2.timestamp!.intValue
+        })
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
@@ -216,13 +214,9 @@ class MessagesController: UITableViewController {
         return 80
     }
     
-}
-
-extension MessagesController: NewMessageUserDelegate {
     func showChatControllerForUser(user: User) {
         let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
         chatLogController.user = user
         navigationController?.pushViewController(chatLogController, animated: true)
     }
 }
-
