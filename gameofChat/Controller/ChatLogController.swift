@@ -139,7 +139,46 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        print("selected an image")
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            selectedImageFromPicker = editedImage
+        } else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            selectedImageFromPicker = originalImage
+        }
+        
+        guard let selectedImage = selectedImageFromPicker else {
+            return
+        }
+        
+        uploadToFirebaseStorage(selectedImage)
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    private func uploadToFirebaseStorage(_ image: UIImage) {
+        let imageName = NSUUID().uuidString
+        let ref = Storage.storage().reference().child("message_images").child(imageName)
+        
+        if let uploadData = image.jpegData(compressionQuality: 0.1) {
+            ref.putData(uploadData, metadata: nil) { (metadata, error) in
+                if error != nil {
+                    print("Failed to upload image", error!)
+                    return
+                }
+                
+                ref.downloadURL(completion: { (url, error) in
+                    if error != nil {
+                        print(error!.localizedDescription)
+                        return
+                    }
+                    guard let url = url else { return }
+                    
+                    self.sendImageWithUrl(url.absoluteString, image: image)
+                  
+                })
+            }
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -200,8 +239,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         cell.textView.text = message.text
         
         setupCell(cell: cell, message: message)
-        //modify the bubbleView's width
-        cell.bubbleWidthAnchor?.constant = estimateFromForText(text: message.text!).width + 32
+        
+        if let text = message.text {
+              cell.bubbleWidthAnchor?.constant = estimateFromForText(text: text).width + 32
+        } else if message.imageUrl != nil {
+            cell.bubbleWidthAnchor?.constant = 200
+        }
         
         return cell
     }
@@ -225,6 +268,15 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             cell.bubbleLeftAnchor?.isActive = true
             cell.profileImageView.isHidden = false
         }
+        
+        if let messageImageUrl = message.imageUrl {
+            cell.messageImageView.loadImageUsingCacheWithUrlString(messageImageUrl)
+            cell.messageImageView.isHidden = false
+            cell.bubbleView.backgroundColor = .clear
+        } else {
+            cell.messageImageView.isHidden = true
+            
+        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -236,10 +288,17 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         var height: CGFloat = 80
         
         //estimate height
-        
-        if let text = messages[indexPath.item].text {
+        let message = messages[indexPath.item]
+        if let text = message.text {
             height = estimateFromForText(text: text).height + 20
+        } else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
+            // h1 / w1 = h2/ w2
+            //solve for h1
+            // h1 = h2 /w2 * w1
+            
+            height = CGFloat(imageHeight / imageWidth * 200)
         }
+        
         let width = UIScreen.main.bounds.width
         return CGSize(width: width, height: height)
     }
@@ -253,13 +312,25 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     var containerViewBottomAnchor: NSLayoutConstraint?
 
     @objc func handleSend() {
+        let properties = ["text": inputTextField.text!] as [String : AnyObject]
+        sendMessageWithProperties(properties)
+    }
+    
+    private func sendImageWithUrl(_ imageUrl: String, image: UIImage) {
+        let properties = ["imageUrl": imageUrl, "imageHeight": image.size.height, "imageWidth": image.size.width] as [String : AnyObject]
+        sendMessageWithProperties(properties)
+    }
+    
+    private func sendMessageWithProperties(_ properties: [String: AnyObject]) {
         let ref = Database.database().reference().child("messages")
         let childRef = ref.childByAutoId()
         
         let toId = user!.id!
         let fromId = Auth.auth().currentUser!.uid
         let timestamp = Int(NSDate().timeIntervalSince1970)
-        let values = ["text": inputTextField.text!, "toId": toId, "fromId": fromId, "timestamp": timestamp] as [String : Any]
+        var values = ["toId": toId, "fromId": fromId, "timestamp": timestamp] as [String : AnyObject]
+        
+        properties.forEach({values[$0] = $1})
         
         childRef.setValue(values) { (error, ref) in
             if error != nil {
