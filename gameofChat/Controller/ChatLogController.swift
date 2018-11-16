@@ -46,6 +46,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                     self.messages.append(message)
                     DispatchQueue.main.async() {
                         self.collectionView?.reloadData()
+                        //scroll to the last index
+                        let indexPath = NSIndexPath(item: self.messages.count - 1, section: 0)
+                        self.collectionView?.scrollToItem(at: indexPath as IndexPath, at: .bottom, animated: true)
                     }
                 
             }, withCancel: nil)
@@ -70,6 +73,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         collectionView?.backgroundColor = .white
         collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.keyboardDismissMode = .interactive
+        
+        setupKeyboardObservers()
     }
     
     lazy var inputContainerView: UIView = {
@@ -198,9 +203,17 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+//
+//        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func handleKeyboardDidShow() {
+        if messages.count > 0 {
+            let indexPath = NSIndexPath(item: self.messages.count - 1, section: 0)
+            collectionView?.scrollToItem(at: indexPath as IndexPath, at: .top, animated: true)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -238,12 +251,16 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let message = messages[indexPath.row]
         cell.textView.text = message.text
         
+        cell.chatLogController = self
+        
         setupCell(cell: cell, message: message)
         
         if let text = message.text {
               cell.bubbleWidthAnchor?.constant = estimateFromForText(text: text).width + 32
+            cell.textView.isHidden = false
         } else if message.imageUrl != nil {
             cell.bubbleWidthAnchor?.constant = 200
+            cell.textView.isHidden = true
         }
         
         return cell
@@ -353,5 +370,18 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         handleSend()
         return true
+    }
+    
+    func performZoomInForStartingImageView(startImageView: UIImageView) {
+        print("tap tap tap")
+        let startingFrame = startImageView.superview?.convert(startImageView.frame, to: nil)
+        print(startingFrame!)
+        
+        let zoomingImageView = UIImageView(frame: startingFrame!)
+        zoomingImageView.backgroundColor = .red
+        
+        if let keyWindow = UIApplication.shared.keyWindow {
+            keyWindow.addSubview(zoomingImageView)
+        }
     }
 }

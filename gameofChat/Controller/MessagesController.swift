@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class MessagesController: UITableViewController, NewMessageUserDelegate {
+class MessagesController: UITableViewController {
     
     let cellId = "cellId"
     
@@ -121,7 +121,7 @@ class MessagesController: UITableViewController, NewMessageUserDelegate {
     
     @objc func handleNewMessage() {
         let newMessageController = NewMessageController()
-        newMessageController.newMessageUserDelegate = self
+        newMessageController.delegate = self
         let navController = UINavigationController(rootViewController: newMessageController)
         present(navController, animated: true, completion: nil)
     }

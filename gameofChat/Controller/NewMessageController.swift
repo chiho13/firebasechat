@@ -9,14 +9,10 @@
 import UIKit
 import Firebase
 
-protocol NewMessageUserDelegate {
-    func showChatControllerForUser(user: User)
-}
-
 class NewMessageController: UITableViewController {
     let cellId = "cellId"
     var users = [User]()
-    var newMessageUserDelegate: NewMessageUserDelegate!
+    var delegate: MessagesController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +67,7 @@ class NewMessageController: UITableViewController {
         dismiss(animated: true, completion: {
             print(123)
             let user = self.users[indexPath.row]
-            self.newMessageUserDelegate.showChatControllerForUser(user: user)
+            self.delegate.showChatControllerForUser(user: user)
         })
     }
 }
